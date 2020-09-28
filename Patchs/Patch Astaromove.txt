@@ -1,0 +1,111 @@
+SUGGESTIONS DE PATCH
+
+
+FONCTION.C
+l.242 : soucis potentiel avec la circularité du bidule labyrinthe pour le calcul de l'heuristique, du chemin...
+
+(l.273) : première condition du while superflue ?
+l.283 : traiter séparemment le cas où il n'y qu'un élément dans l'openlist :
+			...
+			
+            //Suppression de la case d'openList
+            temp_list=openList;
+			if temp_list->suiv == NULL //S'il n'y qu'un seul element, t'es sur duquel faut supprimer
+				openList == NULL
+            while(temp_list->suiv!=temp){
+                temp_list=temp_list->suiv;
+            }
+            temp_list->suiv=temp->suiv;
+			free(temp);
+			
+			...
+			
+(l.280) : pour eviter de creer une autre structure et faire un free de l'ancienne ou pourrait faire (a mettre apres le retrait de temp de l'openlist) :
+			...
+			
+            while(temp_list->suiv!=temp){
+                temp_list=temp_list->suiv;
+            }
+            temp_list->suiv=temp->suiv;
+		
+            //Transfert de la case de openList vers closedList
+            temp->suiv = closedList;
+			closedList = temp;
+			
+			...
+			
+(l.407) : tableau de int pour itinéraire plus simple, a changer :
+	...
+	
+    //Création de l'itinéraire
+    temp_case=&c;
+    for(i=0;i<nb_move;i++){
+        temp_pos=temp_case->pos;
+        temp_case=temp_case->prec;
+        n = move_pos(temp_case->pos,temp_pos);
+        itineraire[i]= n;
+    }
+    itineraire[i]=0;
+}
+
+...
+CHANGER
+int move_pos(Position Ini, Position Fin){ //Donne le mouvement pour aller de Ini a Fin
+
+    int m;
+    int dx, dy;
+    dx=Fin.x-Ini.x;
+    if(dx!=0){
+        if(dx==1){
+            m = 7;
+        }
+        else{
+            m = 6;
+        }
+    }
+    dy=Fin.y-Ini.y;
+    if(dy!=0){
+        if(dy==1){
+            m = 5;
+        }
+        else{
+            m = 4;
+        }
+    }
+    else{
+        m = 8;
+    }
+
+    return m;
+}	
+...
+
+CHANGER 
+void free_itineraire(int* itineraire)
+
+
+
+(l.414) : On ne compte pas la case de départ comme un move
+    while (temp_case->suiv != NULL){ //On détermine combien de mouvement seront nécessaire
+        temp_case=temp_case->prec;
+        nb_move++;
+    }
+Du coup on peut supprimer l.428.
+
+
+FONCTION.H
+(l.32) : structure lourde pour la mémoire, utilisation d'un pointeur ? :
+... 
+
+//Déclaration Liste chainée de Case
+typedef struct element Element;
+
+struct element{
+    Case* c;
+    Element* suiv;
+};
+typedef Element* ListeC;
+
+...
+
+

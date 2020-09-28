@@ -1,0 +1,35 @@
+#define CV(x,y,size_x) x + y*size_x
+
+
+
+void rotation_lab(char* labData, t_move move, int size_x, int size_y){ //Modifie le labyrinthe en cas de rotation (POSSIBILITE : Placer les lignes de codes des if dans pos_suivante)
+    int i, temp;
+    if(move.type==ROTATE_LINE_LEFT){
+        temp=labData[CV(i,move.value,size_x)]; // On garde en mémoire le terme du tableau qui va passer de l'autre côté du labyrinthe avec la rotation (Ici, le 1er terme)
+        for(i=0;i<size_x-1;i++){ //On parcours la ligne en question en échangeant les termes vers la gauche
+            labData[CV(i,move.value,size_x)]=labData[CV(i+1,move.value,size_x)];
+        }
+        labData[CV(size_x-1,move.value,size_x)]=temp; // On place le terme a la fin de la ligne
+    }
+    if(move.type==ROTATE_LINE_RIGHT){
+        temp=labData[CV(size_x-1,move.value,size_x)]; //On garde en mémoire le dernier terme de la ligne
+        for(i=size_x-1;i>0;i--){//On parcours la ligne en sens inverse en échangeant les termes vers la droite
+            labData[CV(i,move.value,size_x)]=labData[CV(i-1,move.value,size_x)];
+        }
+        labData[CV(0,move.value,size_x)]=temp; //On place le terme au début de la ligne
+    }
+    if(move.type==ROTATE_COLUMN_UP){
+        temp=labData[move.value]; //On garde en mémoire le 1er terme de la colonne
+        for(i=0;i<size_y-1;i++){ //On parcours la colonne de haut en bas en échangeant les terme vers le haut
+            labData[CV(move.value, i, size_x)]=labData[CV(move.value, i+1, size_x)];
+        }
+        labData[CV(move.value,size_y-1,size_x)]=temp; //On place le terme  la fin de la colonne
+    }
+    if(move.type==ROTATE_COLUMN_DOWN){
+        temp=labData[CV(move.value, size_y-1, size_x)]; //On garde en mémoire le dernier terme de la colonne
+        for(i=size_y-1;i>0;i--){ //On parcours la colonne de bas en haut en échangeant vers le bas
+            labData[CV(move.value,i,size_x)]=labData[CV(move.value,i-1,size-x)];
+        }
+        labData[CV(move.value,0,size_x)]=temp; //On place le terme au début de la colonne
+    }
+}

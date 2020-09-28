@@ -1,0 +1,6 @@
+ssh -Y 3408017@pc57.polytech.upmc.fr
+
+	"PLAY_RANDOM" for a player that make random (legal) moves 
+ *   (option "rotate=False/True")
+
+Position n'as pas besoin d'avoir une allocation mémoire (malloc) en tant que structure ?
